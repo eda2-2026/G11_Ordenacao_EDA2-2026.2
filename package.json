@@ -1,0 +1,10 @@
+{
+  "name": "g11-ordenacao-eda2-2026-2",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "benchmark": "node scripts/benchmark.js"
+  }
+}
