@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Ranking competitivo de jogadores com Quick Sort, Merge Sort e Heap Sort. Gere estatísticas, ordene por K/D, vitórias, ADR ou pontuação e compare o desempenho dos algoritmos."
+    />
+    <title>Rank Arena | Quick, Merge e Heap Sort</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body data-state="empty">
+    <header class="site-header">
+      <a class="brand" href="#main-content" aria-label="Rank Arena — ir para o ranking">
+        <span class="brand-mark" aria-hidden="true">RA</span>
+        <span>
+          <strong>Rank Arena</strong>
+          <small>Estruturas de Dados 2</small>
+        </span>
+      </a>
+      <span class="header-badge">Ordenação · G11</span>
+    </header>
+
+    <main id="main-content" class="page-shell">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Ranking competitivo</p>
+          <h1 id="page-title">Algoritmos de ordenação aplicados a um ranking de jogadores.</h1>
+          <p class="hero-copy">
+            Simulação de uso dos algoritmos de ordenação para a disciplina Estrutura de Dados 2
+            (EDA2). Gere estatísticas sintéticas de jogadores, ordene por K/D, taxa de vitória,
+            ADR ou pontuação e compare Quick Sort, Merge Sort e Heap Sort.
+          </p>
+        </div>
+        <div class="hero-rule" aria-hidden="true">
+          <span>K/D</span><i></i><strong>+ desempate</strong><i></i><span>Top N</span>
+        </div>
+      </section>
+
+      <section class="panel dataset-panel" aria-labelledby="dataset-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Passo 1</p>
+            <h2 id="dataset-title">Geração de jogadores</h2>
+          </div>
+          <p class="section-note">Dados sintéticos com seed fixa — mesmos números a cada execução.</p>
+        </div>
+
+        <form id="dataset-form" novalidate>
+          <div class="field-grid">
+            <label for="dataset-quantity">
+              Quantidade de jogadores
+              <span class="input-shell">
+                <input
+                  id="dataset-quantity"
+                  name="quantity"
+                  type="number"
+                  min="1"
+                  max="2000000"
+                  step="1"
+                  value="100"
+                  inputmode="numeric"
+                />
+                <small>jogadores</small>
+              </span>
+            </label>
+
+            <label for="dataset-seed">
+              Seed
+              <span class="input-shell">
+                <input
+                  id="dataset-seed"
+                  name="seed"
+                  type="number"
+                  min="0"
+                  step="1"
+                  value="42"
+                  inputmode="numeric"
+                />
+                <small>reprodutível</small>
+              </span>
+            </label>
+          </div>
+
+          <div class="preset-row" role="group" aria-label="Atalhos de quantidade">
+            <button class="button button-ghost preset-button" type="button" data-quantity="100">
+              100 jogadores
+            </button>
+            <button class="button button-ghost preset-button" type="button" data-quantity="10000">
+              10 mil
+            </button>
+            <button class="button button-ghost preset-button" type="button" data-quantity="1000000">
+              1 milhão
+            </button>
+          </div>
+
+          <div class="button-row">
+            <button id="generate-dataset" class="button button-primary" type="submit">
+              Gerar jogadores
+            </button>
+            <p id="dataset-status" class="status-text" role="status" aria-live="polite">
+              Nenhum dataset gerado ainda.
+            </p>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel ranking-panel" aria-labelledby="ranking-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Passo 2</p>
+            <h2 id="ranking-title">Ranking Top N</h2>
+          </div>
+          <p id="criterion-description" class="section-note">
+            K/D decrescente · desempates: taxa de vitória, ADR, nome
+          </p>
+        </div>
+
+        <form id="ranking-form" novalidate>
+          <div class="field-grid field-grid-three">
+            <label for="criterion-select">
+              Critério
+              <select id="criterion-select" name="criterion">
+                <option value="kd">K/D</option>
+                <option value="taxaVitoria">Taxa de vitória</option>
+                <option value="adr">ADR</option>
+                <option value="pontuacao">Pontuação</option>
+              </select>
+            </label>
+
+            <label for="algorithm-select">
+              Algoritmo
+              <select id="algorithm-select" name="algorithm">
+                <option value="quick">Quick Sort</option>
+                <option value="merge">Merge Sort</option>
+                <option value="heap">Heap Sort</option>
+              </select>
+            </label>
+
+            <label for="top-n">
+              Exibir
+              <span class="input-shell">
+                <input
+                  id="top-n"
+                  name="topN"
+                  type="number"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="10"
+                  inputmode="numeric"
+                />
+                <small>posições</small>
+              </span>
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button id="run-ranking" class="button button-primary" type="submit" disabled>
+              Gerar ranking
+            </button>
+            <p id="ranking-status" class="status-text" role="status" aria-live="polite">
+              Gere um dataset para liberar o ranking.
+            </p>
+          </div>
+        </form>
+
+        <div class="metrics-grid" aria-label="Métricas da última ordenação">
+          <div class="metric-card">
+            <span class="metric-label">Tempo</span>
+            <strong id="metric-time" class="metric-value">—</strong>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Comparações</span>
+            <strong id="metric-comparisons" class="metric-value">—</strong>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Movimentações</span>
+            <strong id="metric-moves" class="metric-value">—</strong>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Trocas</span>
+            <strong id="metric-swaps" class="metric-value">—</strong>
+          </div>
+        </div>
+
+        <div class="table-shell">
+          <table>
+            <caption class="sr-only">Ranking de jogadores ordenado pelo critério escolhido</caption>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Jogador</th>
+                <th scope="col">K/D</th>
+                <th scope="col">Vitórias</th>
+                <th scope="col">ADR</th>
+                <th scope="col">Pontuação</th>
+              </tr>
+            </thead>
+            <tbody id="ranking-body">
+              <tr class="empty-row">
+                <td colspan="6">Gere jogadores e clique em “Gerar ranking”.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel comparison-panel" aria-labelledby="comparison-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Laboratório</p>
+            <h2 id="comparison-title">Os três algoritmos, o mesmo ranking</h2>
+          </div>
+          <p class="section-note">
+            Todos recebem uma cópia dos mesmos dados e o mesmo critério selecionado acima.
+          </p>
+        </div>
+
+        <div class="button-row">
+          <button id="compare-algorithms" class="button button-secondary" type="button" disabled>
+            Comparar Quick, Merge e Heap
+          </button>
+          <p id="comparison-status" class="status-text" role="status" aria-live="polite">
+            Gere um dataset para liberar a comparação.
+          </p>
+        </div>
+
+        <p id="comparison-winner" class="winner-line"></p>
+
+        <div class="table-shell">
+          <table>
+            <caption class="sr-only">Comparação de tempo, comparações e movimentações por algoritmo</caption>
+            <thead>
+              <tr>
+                <th scope="col">Algoritmo</th>
+                <th scope="col">Tempo</th>
+                <th scope="col">Comparações</th>
+                <th scope="col">Movimentações</th>
+                <th scope="col">Estável</th>
+                <th scope="col">Ordem correta</th>
+              </tr>
+            </thead>
+            <tbody id="comparison-body">
+              <tr class="empty-row">
+                <td colspan="6">Execute a comparação para ver os resultados lado a lado.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel benchmark-panel" aria-labelledby="benchmark-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Análise experimental</p>
+            <h2 id="benchmark-title">Benchmark de escala</h2>
+          </div>
+          <p class="section-note">
+            Roda 100, 10.000 e 1.000.000 de jogadores para cada algoritmo, no critério escolhido.
+          </p>
+        </div>
+
+        <div class="field-grid field-grid-two">
+          <label for="benchmark-criterion">
+            Critério do benchmark
+            <select id="benchmark-criterion" name="benchmarkCriterion">
+              <option value="kd">K/D</option>
+              <option value="taxaVitoria">Taxa de vitória</option>
+              <option value="adr">ADR</option>
+              <option value="pontuacao">Pontuação</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button id="run-benchmark" class="button button-primary" type="button">
+            Rodar benchmark completo
+          </button>
+          <button id="download-benchmark" class="button button-ghost" type="button" disabled>
+            Baixar CSV
+          </button>
+          <p id="benchmark-status" class="status-text" role="status" aria-live="polite">
+            Pronto para rodar.
+          </p>
+        </div>
+
+        <div class="table-shell">
+          <table>
+            <caption class="sr-only">Resultados do benchmark por tamanho e algoritmo</caption>
+            <thead>
+              <tr>
+                <th scope="col">Tamanho</th>
+                <th scope="col">Algoritmo</th>
+                <th scope="col">Tempo</th>
+                <th scope="col">Comparações</th>
+                <th scope="col">Movimentações</th>
+                <th scope="col">Ordem correta</th>
+              </tr>
+            </thead>
+            <tbody id="benchmark-body">
+              <tr class="empty-row">
+                <td colspan="6">Nenhum benchmark executado ainda.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        G11 · Estrutura de Dados 2 · 2026.2 — Quick Sort, Merge Sort e Heap Sort aplicados a
+        rankings por múltiplas chaves.
+      </p>
+    </footer>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
