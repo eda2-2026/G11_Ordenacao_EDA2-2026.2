@@ -19,6 +19,7 @@ test("modo de geração gera jogadores e mostra a prévia sem ordenação", asyn
   assert.match(fakeDom.get("#ranking-status").textContent, /indisponível/);
   assert.match(fakeDom.get("#comparison-status").textContent, /indisponível/);
   assert.match(fakeDom.get("#benchmark-status").textContent, /indisponível/);
+  assert.equal(fakeDom.get("#run-benchmark").disabled, true);
 });
 
 test("modo de geração valida a quantidade informada", async () => {

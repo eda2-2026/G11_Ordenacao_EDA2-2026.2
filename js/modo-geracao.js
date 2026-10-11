@@ -54,6 +54,7 @@ export function ativarModoGeracao(documentRef, deps = {}) {
     rankingStatus: required(documentRef, "#ranking-status"),
     comparisonStatus: required(documentRef, "#comparison-status"),
     benchmarkStatus: required(documentRef, "#benchmark-status"),
+    runBenchmark: required(documentRef, "#run-benchmark"),
     rankingBody: required(documentRef, "#ranking-body"),
   };
 
@@ -134,6 +135,7 @@ export function ativarModoGeracao(documentRef, deps = {}) {
     "Comparação indisponível: aguardando os módulos de ordenação.";
   elements.benchmarkStatus.textContent =
     "Benchmark indisponível: aguardando os módulos de ordenação.";
+  elements.runBenchmark.disabled = true;
 
   return { gerarPrevia };
 }
