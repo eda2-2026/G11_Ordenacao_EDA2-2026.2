@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { mergeSort } from "../js/algoritmos/merge-sort.js";
+import { gerarJogadores } from "../js/gerador.js";
 
 function compararNumero(a, b) {
   if (a < b) {
@@ -31,23 +32,7 @@ function compararSemNome(a, b) {
 }
 
 function criarAmostra(quantidade, seed = 7) {
-  let estado = seed >>> 0;
-  const aleatorio = () => {
-    estado = (estado * 1664525 + 1013904223) >>> 0;
-    return estado / 4294967296;
-  };
-  const jogadores = [];
-
-  for (let i = 0; i < quantidade; i += 1) {
-    jogadores.push({
-      nome: `jogador_${String(i).padStart(4, "0")}`,
-      kd: Math.round(aleatorio() * 250) / 100,
-      taxaVitoria: Math.round(aleatorio() * 100) / 100,
-      adr: Math.round(aleatorio() * 150),
-    });
-  }
-
-  return jogadores;
+  return gerarJogadores(quantidade, { seed });
 }
 
 function nomes(jogadores) {
