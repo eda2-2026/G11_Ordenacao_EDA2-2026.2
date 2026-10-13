@@ -21,10 +21,13 @@ function criarCelula(documentRef, valor) {
   const celula = documentRef.createElement("td");
 
   if (valor !== null && typeof valor === "object") {
-    celula.textContent = valor.texto;
-
     if (valor.classe) {
-      celula.className = valor.classe;
+      const selo = documentRef.createElement("span");
+      selo.textContent = valor.texto;
+      selo.className = valor.classe;
+      celula.appendChild(selo);
+    } else {
+      celula.textContent = valor.texto;
     }
   } else {
     celula.textContent = String(valor);
@@ -242,9 +245,6 @@ export function createRankingApp(documentRef, deps = {}) {
         resultado.estavel
           ? { texto: "Sim", classe: "badge badge-ok" }
           : { texto: "Não", classe: "badge badge-no" },
-        resultado.correta
-          ? { texto: "OK", classe: "badge badge-ok" }
-          : { texto: "ERRO", classe: "badge badge-no" },
       ]),
     );
 

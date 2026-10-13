@@ -104,6 +104,12 @@ test("comparação executa os três algoritmos e aponta o vencedor", async () =>
 
   assert.equal(resultados.length, 3);
   assert.equal(fakeDom.get("#comparison-body").children.length, 3);
+
+  const primeiraLinha = fakeDom.get("#comparison-body").children[0];
+  assert.equal(primeiraLinha.children.length, 5);
+  assert.equal(primeiraLinha.children[4].children[0].className, "badge badge-no");
+  assert.equal(primeiraLinha.children[4].children[0].textContent, "Não");
+
   assert.ok(resultados.every((resultado) => resultado.correta));
   assert.match(fakeDom.get("#comparison-winner").textContent, /Mais rápido/);
 });
