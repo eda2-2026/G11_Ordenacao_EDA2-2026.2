@@ -125,6 +125,7 @@ test("benchmark usa os tamanhos injetados e libera o download do CSV", async () 
 
   assert.equal(linhas.length, 8);
   assert.equal(fakeDom.get("#benchmark-body").children.length, 8);
+  assert.equal(fakeDom.get("#benchmark-body").children[0].children.length, 5);
   assert.equal(fakeDom.get("#download-benchmark").disabled, false);
   assert.match(fakeDom.get("#benchmark-status").textContent, /concluído/);
 

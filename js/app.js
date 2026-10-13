@@ -305,9 +305,6 @@ export function createRankingApp(documentRef, deps = {}) {
           formatarTempo(linha.tempoMs),
           linha.comparacoes === null ? "—" : formatarNumero(linha.comparacoes),
           linha.movimentacoes === null ? "—" : formatarNumero(linha.movimentacoes),
-          linha.correta
-            ? { texto: "OK", classe: "badge badge-ok" }
-            : { texto: "ERRO", classe: "badge badge-no" },
         ]),
       );
 
